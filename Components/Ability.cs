@@ -9,6 +9,7 @@ public class Ability : MonoBehaviour
     public int castingTime;
     private GameObject objectToInstantiate;
     public Pawn _pawn;
+    public Player _player;
     public Vector2 mousePos;
     public bool usable=true;
     public bool onCooldown=false;

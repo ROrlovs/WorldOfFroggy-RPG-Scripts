@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameOfAbility: Dash
   cooldown: 3
-  castingTime: 0
+  castingTime: 1
   gameObjToInstantiate: {fileID: 0}
+  script: {fileID: 0}

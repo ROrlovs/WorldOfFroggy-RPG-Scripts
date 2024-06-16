@@ -17,6 +17,7 @@ public class MovingState : BaseState
     {
         base.Enter();
         _horizontalInput = _verticalInput = 0f;
+        PlayerCastManager.Instance.onPlayerStartCast += StopMovement;
     }
 
     public override void UpdateLogic()
@@ -25,10 +26,11 @@ public class MovingState : BaseState
 
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
+
         if(Mathf.Abs(_horizontalInput)<Mathf.Epsilon && Mathf.Abs(_verticalInput)<Mathf.Epsilon)
             stateMachine.ChangeState(_sm.idleState);
-    }
 
+    }
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
@@ -37,5 +39,13 @@ public class MovingState : BaseState
         vel = new Vector2(_horizontalInput, _verticalInput);
         vel*=_sm.speed;
         _sm.rb.velocity = vel;
+    }
+
+    private void StopMovement()
+    {
+        Debug.Log("stop movement!!!");
+        _sm.rb.velocity = Vector2.zero;
+        _horizontalInput = _verticalInput = 0;
+        stateMachine.ChangeState(_sm.idleState);
     }
 }

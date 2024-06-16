@@ -4,17 +4,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Vit.Utilities.Singletons;
 
 
 
-public class PlayerCastManager : MonoBehaviour
+public class PlayerCastManager : Singleton<PlayerCastManager>
 {
+
+
+
+    public Player player;
 
     public delegate void OnPlayerStartCast();
     public OnPlayerStartCast onPlayerStartCast;
 
-    public delegate void OnPlayerStopCast();
-    public OnPlayerStopCast onPlayerStopCast;
+    public delegate void OnPlayerInterruptCast();
+    public OnPlayerInterruptCast onPlayerInterruptCast;
+
+    public delegate void OnPlayerSuccessCast();
+    public OnPlayerSuccessCast onPlayerSuccessCast;
+    public bool isCasting;
 
     private Ability _currentAbility;
 
@@ -22,24 +31,13 @@ public class PlayerCastManager : MonoBehaviour
 
 
 
-    public static PlayerCastManager instance;
-
-    void Awake()
-    {
-        if(instance == null)
-        {
-            instance = this;
-        }
-
-        else
-        {
-            Debug.LogWarning("MULTIPLE INSTANCES OF "+this);
-            
-        }
-    }
 
     void Start()
     {
+        player = 
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Player>()!=null ? 
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Player>() : null;
+            
         InitialiseAbilityList();
     }
 
@@ -59,22 +57,14 @@ public class PlayerCastManager : MonoBehaviour
 
     }
 
-    public void Cast(int index) 
+    public void AttemptCast(int index) 
     {
-        //-----
-    if (index < 0 || index >= abilityList.Count || abilityList[index] == null)
-    {
-        Debug.Log("Invalid ability index or null ability at index " + index);
-        return;
-    }
-        //-----
-
-
         _currentAbility = abilityList[index];
         if(_currentAbility.usable && !_currentAbility.onCooldown)
         {
-            StartCoroutine(StartCastingTime());
             Debug.Log("casting "+_currentAbility.nameOfAbility);
+            StartCoroutine(StartCastingTime());
+            
         }
 
         else
@@ -87,15 +77,21 @@ public class PlayerCastManager : MonoBehaviour
 
     private IEnumerator StartCastingTime()
     {
+        onPlayerStartCast.Invoke();
+        isCasting = true;
         int secondsPassed = 0;
 
-        while(secondsPassed != _currentAbility.castingTime)
+        while(isCasting && secondsPassed != _currentAbility.castingTime)
         {
             yield return new WaitForSecondsRealtime(1);
             secondsPassed++;
         }
 
-        FireAbility();
+        if(isCasting)
+        {
+            FireAbility();
+        }
+        
 
 
                
@@ -116,7 +112,19 @@ public class PlayerCastManager : MonoBehaviour
 
     private void FireAbility()
     {
+        //onPlayerSuccessCast.Invoke();
+        _currentAbility.Action();
         StartCoroutine(StartCooldown(_currentAbility));
+        isCasting=false;
+        _currentAbility = null;
+    }
+
+    public void InterruptCast()
+    {
+        //onPlayerInterruptCast.Invoke();
+        StopCoroutine(StartCastingTime());
+        isCasting = false;
+        Debug.Log("interrupted cast" + _currentAbility.nameOfAbility);
         _currentAbility = null;
     }
 

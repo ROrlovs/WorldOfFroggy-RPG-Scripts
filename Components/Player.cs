@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Player : Pawn
 {
-    private Vector2 _mousePos;
+    public Vector2 mousePos;
 
     void Start()
     {
@@ -21,14 +21,14 @@ public class Player : Pawn
     {
         if(Input.GetKeyDown(KeyCode.Q))
         {
-            PlayerCastManager.instance.Cast(0);
+            PlayerCastManager.Instance.AttemptCast(0);
         }
     }
 
     private void LookAtMouse()
     {
-        _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, (Vector3) _mousePos-transform.position);
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, (Vector3) mousePos-transform.position);
     }
 
 
