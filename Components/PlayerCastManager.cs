@@ -15,7 +15,7 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
 
     public Player player;
 
-    public delegate void OnPlayerStartCast();
+    public delegate void OnPlayerStartCast(float castTime, string abilityName);
     public OnPlayerStartCast onPlayerStartCast;
 
     public delegate void OnPlayerInterruptCast();
@@ -77,9 +77,11 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
 
     private IEnumerator StartCastingTime()
     {
-        onPlayerStartCast.Invoke();
+        
         isCasting = true;
-        int secondsPassed = 0;
+        Debug.Log("invoking onplayerstartcast with "+_currentAbility.castingTime +" "+ _currentAbility.nameOfAbility);
+        onPlayerStartCast.Invoke(_currentAbility.castingTime,_currentAbility.nameOfAbility);
+        float secondsPassed = 0;
 
         while(isCasting && secondsPassed != _currentAbility.castingTime)
         {

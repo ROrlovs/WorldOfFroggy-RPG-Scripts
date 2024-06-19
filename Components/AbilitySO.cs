@@ -4,8 +4,8 @@ using UnityEngine;
 public class AbilitySO : ScriptableObject
 {
     public string nameOfAbility;
-    public int cooldown;
-    public int castingTime;
+    public float cooldown;
+    public float castingTime;
     public GameObject gameObjToInstantiate;
     public Ability script;
 

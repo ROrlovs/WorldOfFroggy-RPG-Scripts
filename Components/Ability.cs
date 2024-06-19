@@ -5,8 +5,8 @@ public class Ability : MonoBehaviour
 
     public AbilitySO abilitySO;
     public string nameOfAbility;
-    public int cooldown;
-    public int castingTime;
+    public float cooldown;
+    public float castingTime;
     private GameObject objectToInstantiate;
     public Pawn _pawn;
     public Player _player;
