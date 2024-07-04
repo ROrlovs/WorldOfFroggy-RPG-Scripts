@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Pawn : MonoBehaviour, IPawn
+public class Pawn : MonoBehaviour
 {
 
     public Rigidbody2D rb;
