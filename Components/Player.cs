@@ -9,6 +9,13 @@ public class Player : Pawn
     [SerializeField] private float enemyTargetDistance = 3f;
     public Enemy target;
 
+    public delegate void OnNewTarget(Enemy target);
+    public OnNewTarget onNewTarget;
+
+    public delegate void OnClearTarget();
+    public OnClearTarget onClearTarget;
+
+
     void Start()
     {
     }
@@ -39,6 +46,7 @@ public class Player : Pawn
     private void CheckTargetInput()
     {
         if(Input.GetKeyDown(KeyCode.Tab)) FindClosestEnemy();
+        if(Input.GetKeyDown(KeyCode.Escape)) ResetTarget();
         
     }
 
@@ -51,6 +59,7 @@ public class Player : Pawn
         if(hit != null && hit.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             SetTarget(hit.transform);
+            onNewTarget.Invoke(hit.GetComponent<Enemy>());
         }
 
     }
@@ -61,6 +70,7 @@ public class Player : Pawn
         {
             target.UnsetAsTargetedEnemy();
             target = null;
+            onClearTarget.Invoke();
         }
     }
 
