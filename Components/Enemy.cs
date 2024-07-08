@@ -9,6 +9,8 @@ public class Enemy : Pawn, ITargetable
 
     public SpriteRenderer targetSpriteRenderer;
 
+
+
     void Start()
     {
         //Debug.Log(ReturnTargetTransform());
@@ -18,6 +20,17 @@ public class Enemy : Pawn, ITargetable
     public override void Move(Vector2 movement)
     {
         base.Move(movement);
+    }
+
+    public override void Die()
+    {
+        if(isTargeted)
+        {
+            Debug.Log("targeted");
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().ClearTarget();
+        } 
+        isTargeted = false;
+        base.Die();
     }
 
 
@@ -32,11 +45,13 @@ public class Enemy : Pawn, ITargetable
 
     public void SetAsTargetedEnemy()
     {
+        isTargeted = true;
         ToggleTargetSprite(true);
     }
 
     public void UnsetAsTargetedEnemy()
     {
+        isTargeted = false;
         ToggleTargetSprite(false);
     }
 

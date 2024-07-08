@@ -10,7 +10,7 @@ public class AbilityDash : Ability
 
 
 
-    public override void Action()
+    public override void Action(Enemy target)
     {
         _player=GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         _player.rb.velocity=Vector2.zero;

@@ -7,10 +7,12 @@ public class Ability : MonoBehaviour
     public string nameOfAbility;
     public float cooldown;
     public float castingTime;
-    private GameObject objectToInstantiate;
-    public Pawn _pawn;
-    public Player _player;
-    public Vector2 mousePos;
+    public float damageToDeal;
+    public GameObject objectToInstantiate;
+    public Pawn pawn;
+    public Player player;
+    public Vector2 abilityMousePos;
+    public Enemy target;
     public bool usable=true;
     public bool onCooldown=false;
 
@@ -18,7 +20,8 @@ public class Ability : MonoBehaviour
     
     public virtual void Start()
     {
-        _pawn = 
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        pawn = 
             GameObject.FindGameObjectWithTag("Player").GetComponent<Player>()!=null ? 
             GameObject.FindGameObjectWithTag("Player").GetComponent<Player>() : null;
 
@@ -26,16 +29,17 @@ public class Ability : MonoBehaviour
         cooldown = abilitySO.cooldown;
         castingTime = abilitySO.castingTime;
         objectToInstantiate = abilitySO.gameObjToInstantiate;
+        damageToDeal = abilitySO.damageToDeal;
     }
 
     public void Update()
     {
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        abilityMousePos = player.mousePos;
     }
 
 
 
-    public virtual void Action(){}
+    public virtual void Action(Enemy target){}
 
 
 

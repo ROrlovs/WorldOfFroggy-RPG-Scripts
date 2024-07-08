@@ -15,6 +15,15 @@ public class Player : Pawn
     public delegate void OnClearTarget();
     public OnClearTarget onClearTarget;
 
+    private void OnEnable() 
+    {
+        
+    }
+
+    private void OnDisable() 
+    {
+        
+    }
 
     void Start()
     {
@@ -39,14 +48,19 @@ public class Player : Pawn
     {
         if(Input.GetKeyDown(KeyCode.Q))
         {
-            PlayerCastManager.Instance.AttemptCast(0);
+            PlayerCastManager.Instance.AttemptCast(0, target);
+        }
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            PlayerCastManager.Instance.AttemptCast(1, target);
         }
     }
 
     private void CheckTargetInput()
     {
         if(Input.GetKeyDown(KeyCode.Tab)) FindClosestEnemy();
-        if(Input.GetKeyDown(KeyCode.Escape)) ResetTarget();
+        if(Input.GetKeyDown(KeyCode.Escape)) ClearTarget();
         
     }
 
@@ -64,31 +78,31 @@ public class Player : Pawn
 
     }
 
-    private void ResetTarget()
+    public void ClearTarget()
     {
         if(target!=null)
         {
             target.UnsetAsTargetedEnemy();
-            target = null;
-            onClearTarget.Invoke();
         }
+        target = null;
+        onClearTarget.Invoke();
     }
 
     private void SetTarget(Transform targetTransform)
     {
-        ResetTarget();
+        ClearTarget();
         target = targetTransform.GetComponent<Enemy>();
         target.SetAsTargetedEnemy();
-        Debug.Log("found enemy = "+target);
+        //Debug.Log("found enemy = "+target);
     }
 
     private void CheckDistanceFromEnemy()
     {
         float distance = (target.transform.position - transform.position).magnitude;
-        Debug.Log("distance from target = "+distance);
+        //Debug.Log("distance from target = "+distance);
         if( distance > enemyTargetDistance)
         {
-            ResetTarget();
+            ClearTarget();
         }
     }
 

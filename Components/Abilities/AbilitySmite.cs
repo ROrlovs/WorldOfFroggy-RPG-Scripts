@@ -10,7 +10,7 @@ public class AbilitySmite : Ability
 
 
 
-    public override void Action()
+    public override void Action(Enemy target)
     {
         
     }

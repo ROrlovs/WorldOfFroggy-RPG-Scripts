@@ -8,6 +8,7 @@ public class AbilitySO : ScriptableObject
     public float castingTime;
     public GameObject gameObjToInstantiate;
     public Ability script;
+    public float damageToDeal;
 
     public void Test()
     {

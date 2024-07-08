@@ -14,6 +14,7 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
 
 
     public Player player;
+    public Enemy target;
 
     public delegate void OnPlayerStartCast(float castTime, string abilityName);
     public OnPlayerStartCast onPlayerStartCast;
@@ -57,10 +58,11 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
 
     }
 
-    public void AttemptCast(int index) 
+    public void AttemptCast(int index, Enemy abilityTarget) 
     {
+        target = abilityTarget;
         _currentAbility = abilityList[index];
-        if(_currentAbility.usable && !_currentAbility.onCooldown)
+        if(_currentAbility.usable && !_currentAbility.onCooldown && target!=null)
         {
             Debug.Log("casting "+_currentAbility.nameOfAbility);
             StartCoroutine(StartCastingTime());
@@ -79,7 +81,7 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
     {
         
         isCasting = true;
-        Debug.Log("invoking onplayerstartcast with "+_currentAbility.castingTime +" "+ _currentAbility.nameOfAbility);
+        //Debug.Log("invoking onplayerstartcast with "+_currentAbility.castingTime +" "+ _currentAbility.nameOfAbility);
         onPlayerStartCast.Invoke(_currentAbility.castingTime,_currentAbility.nameOfAbility);
         float secondsPassed = 0;
 
@@ -91,7 +93,7 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
 
         if(isCasting)
         {
-            FireAbility();
+            FireAbility(target);
         }
         
 
@@ -112,12 +114,13 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
 
     }
 
-    private void FireAbility()
+    private void FireAbility(Enemy target)
     {
         //onPlayerSuccessCast.Invoke();
-        _currentAbility.Action();
+        _currentAbility.Action(target);
         StartCoroutine(StartCooldown(_currentAbility));
         isCasting=false;
+        target = null;
         _currentAbility = null;
     }
 
@@ -127,6 +130,7 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
         StopCoroutine(StartCastingTime());
         isCasting = false;
         Debug.Log("interrupted cast" + _currentAbility.nameOfAbility);
+        target = null;
         _currentAbility = null;
     }
 
