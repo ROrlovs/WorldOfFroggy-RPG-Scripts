@@ -41,7 +41,7 @@ public class MovingState : BaseState
         _sm.rb.velocity = vel;
     }
 
-    private void StopMovement(float notused_float, string notused_string)
+    private void StopMovement(Ability ability)
     {
         //Debug.Log("stop movement!!!");
         _sm.rb.velocity = Vector2.zero;

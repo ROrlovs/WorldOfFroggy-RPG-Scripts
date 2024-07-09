@@ -34,7 +34,7 @@ public class Player : Pawn
 
         CheckAbilityInputs();
         CheckTargetInput();
-        LookAtMouse();
+
         if(target!=null) CheckDistanceFromEnemy();
         
 

@@ -9,10 +9,6 @@ public class AbilitySO : ScriptableObject
     public GameObject gameObjToInstantiate;
     public Ability script;
     public float damageToDeal;
-
-    public void Test()
-    {
-        Debug.Log("hello test");
-    }
+    public bool requiresTarget;
 
 }

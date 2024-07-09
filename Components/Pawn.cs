@@ -6,12 +6,13 @@ public class Pawn : MonoBehaviour
     public string pawnName;
     public Rigidbody2D rb;
     public float health = 1f;
+    public float speed = 1f;
     public float maxHealth = 1f;
     public float timeBeforeDestroy = 2f;
 
     public virtual void Move(Vector2 movement)
     {
-        rb.MovePosition(movement);
+        transform.position = Vector2.MoveTowards(transform.position, movement, speed * Time.deltaTime);
     }
 
     public virtual void TakeDamage(float amount)

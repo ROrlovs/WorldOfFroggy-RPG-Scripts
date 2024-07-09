@@ -6,6 +6,7 @@ public class CameraScript : MonoBehaviour
     public Player player;
     public Enemy target;
     [SerializeField] private float cameraZOffset;
+    private Vector3 velocity = Vector3.zero;
 
 
     void OnEnable()
@@ -27,7 +28,9 @@ public class CameraScript : MonoBehaviour
     private void TargetEnemyCamera(Enemy enemy)
     {
         target = enemy;
-        StartCoroutine(TargetEnemyCoroutine());
+        if(target.isTargetable) StartCoroutine(TargetEnemyCoroutine());
+        else target=null;
+        
     }
 
     private void FollowPlayer()
@@ -40,7 +43,7 @@ public class CameraScript : MonoBehaviour
     {
         while (target==null)
         {
-            transform.position = new Vector3(player.transform.position.x, player.transform.position.y, cameraZOffset);
+            transform.position = Vector3.SmoothDamp(transform.position,new Vector3(player.transform.position.x, player.transform.position.y, cameraZOffset),ref velocity,0.25f) ;
             yield return new WaitForEndOfFrame();            
         }
 

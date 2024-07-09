@@ -1,6 +1,7 @@
 
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Fireball",menuName = "Ability/Fire/Fireball")]
 public class AbilityFireball : Ability
 {
 
@@ -9,9 +10,10 @@ public class AbilityFireball : Ability
     public override void Action(Enemy target)
     {
         base.Action(target);
-        projectile = Instantiate(objectToInstantiate,player.transform.position,Quaternion.identity).GetComponent<Projectile>();
-        projectile.target = target;
+
     }
+
+
 
     public override void Start()
     {

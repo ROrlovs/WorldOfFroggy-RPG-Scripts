@@ -16,7 +16,7 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
     public Player player;
     public Enemy target;
 
-    public delegate void OnPlayerStartCast(float castTime, string abilityName);
+    public delegate void OnPlayerStartCast(Ability ability);
     public OnPlayerStartCast onPlayerStartCast;
 
     public delegate void OnPlayerInterruptCast();
@@ -28,7 +28,6 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
 
     private Ability _currentAbility;
 
-    public List<Ability> abilityList;
 
 
 
@@ -38,31 +37,24 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
         player = 
             GameObject.FindGameObjectWithTag("Player").GetComponent<Player>()!=null ? 
             GameObject.FindGameObjectWithTag("Player").GetComponent<Player>() : null;
-            
-        InitialiseAbilityList();
-    }
-
-    private void InitialiseAbilityList()
-    {
-        abilityList = GetComponentsInChildren<Ability>().ToList();
-        foreach (Ability ab in abilityList)
-        {
-            Debug.Log("Ability added to list: "+ab.nameOfAbility+" into index "+abilityList.FindIndex(a => a == ab));
-        }
+        
     }
 
 
-//add new abilities player can use into spellbook
-    void AddAbility(AbilitySO ability)
-    {
 
-    }
+
+
 
     public void AttemptCast(int index, Enemy abilityTarget) 
     {
         target = abilityTarget;
-        _currentAbility = abilityList[index];
-        if(_currentAbility.usable && !_currentAbility.onCooldown && target!=null)
+        if(target==null)
+        {
+            AttemptCast(index);
+            return;
+        } 
+        _currentAbility = PlayerSpellbookManager.Instance.spellbookAbilityList[index];
+        if(_currentAbility.usable && !_currentAbility.onCooldown && target!=null && !isCasting)
         {
             Debug.Log("casting "+_currentAbility.nameOfAbility);
             StartCoroutine(StartCastingTime());
@@ -71,24 +63,42 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
 
         else
         {
-            Debug.Log("Cannot use this ability! "+_currentAbility.nameOfAbility);
+            Debug.Log($"Cannot use this ability! {_currentAbility.nameOfAbility}, variables: Usable:{_currentAbility.usable}, OnCooldown:{_currentAbility.onCooldown}, PlayerIsCasting:{isCasting}");
         }
 
         
     }
+
+    public void AttemptCast(int index) 
+    {
+        _currentAbility = PlayerSpellbookManager.Instance.spellbookAbilityList[index];
+        if(_currentAbility.usable && !_currentAbility.onCooldown && !_currentAbility.requiresTarget && !isCasting)
+        {
+            Debug.Log("casting "+_currentAbility.nameOfAbility);
+            StartCoroutine(StartCastingTime());
+        }
+
+        else
+        {
+            Debug.Log($"Cannot use this ability! {_currentAbility.nameOfAbility}, variables: Usable:{_currentAbility.usable}, OnCooldown:{_currentAbility.onCooldown}, PlayerIsCasting:{isCasting}");
+        }
+
+        
+    }
+
 
     private IEnumerator StartCastingTime()
     {
         
         isCasting = true;
         //Debug.Log("invoking onplayerstartcast with "+_currentAbility.castingTime +" "+ _currentAbility.nameOfAbility);
-        onPlayerStartCast.Invoke(_currentAbility.castingTime,_currentAbility.nameOfAbility);
-        float secondsPassed = 0;
+        onPlayerStartCast.Invoke(_currentAbility);
+        float ticksPassed = 0;
 
-        while(isCasting && secondsPassed != _currentAbility.castingTime)
+        while(isCasting && ticksPassed != _currentAbility.castingTime*10)
         {
-            yield return new WaitForSecondsRealtime(1);
-            secondsPassed++;
+            yield return new WaitForSecondsRealtime(0.1f);
+            ticksPassed++;
         }
 
         if(isCasting)
@@ -105,6 +115,7 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
     private IEnumerator StartCooldown(Ability ability)
     {
         int secondsPassed = 0;
+        ability.onCooldown = true;
 
         while(secondsPassed != ability.cooldown)
         {
@@ -112,12 +123,20 @@ public class PlayerCastManager : Singleton<PlayerCastManager>
             secondsPassed++;
         }
 
+        ability.onCooldown = false;
+
     }
 
     private void FireAbility(Enemy target)
     {
         //onPlayerSuccessCast.Invoke();
         _currentAbility.Action(target);
+        if(_currentAbility.objectToInstantiate !=null)
+        {
+            Projectile projectile;
+            projectile = Instantiate(_currentAbility.objectToInstantiate,player.transform.position,Quaternion.identity).GetComponent<Projectile>();
+            projectile.target = target;
+        }
         StartCoroutine(StartCooldown(_currentAbility));
         isCasting=false;
         target = null;

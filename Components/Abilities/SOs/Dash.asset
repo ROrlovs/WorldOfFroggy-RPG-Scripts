@@ -9,11 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: febdc6ac4b5b7254694138c4fbb0510e, type: 3}
-  m_Name: AbilityDash
+  m_Script: {fileID: 11500000, guid: 957bf280cadfc7b4aa9e3febb925590a, type: 3}
+  m_Name: Dash
   m_EditorClassIdentifier: 
+  abilitySO: {fileID: 0}
   nameOfAbility: Dash
-  cooldown: 3
+  cooldown: 2
   castingTime: 0
-  gameObjToInstantiate: {fileID: 0}
-  script: {fileID: 0}
+  damageToDeal: 0
+  objectToInstantiate: {fileID: 0}
+  pawn: {fileID: 0}
+  player: {fileID: 0}
+  abilityMousePos: {x: 0, y: 0}
+  target: {fileID: 0}
+  usable: 1
+  onCooldown: 0
+  requiresTarget: 0

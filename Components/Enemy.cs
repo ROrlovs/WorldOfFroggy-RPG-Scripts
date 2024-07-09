@@ -6,6 +6,7 @@ public class Enemy : Pawn, ITargetable
 {
 
     public bool isTargeted;
+    public bool isTargetable;
 
     public SpriteRenderer targetSpriteRenderer;
 
@@ -15,6 +16,7 @@ public class Enemy : Pawn, ITargetable
     {
         //Debug.Log(ReturnTargetTransform());
         ToggleTargetSprite(false);
+        isTargetable = true;
     }
 
     public override void Move(Vector2 movement)
@@ -24,6 +26,8 @@ public class Enemy : Pawn, ITargetable
 
     public override void Die()
     {
+        Destroy(GetComponent<BoxCollider2D>());
+        isTargetable = false;
         if(isTargeted)
         {
             Debug.Log("targeted");
@@ -45,8 +49,12 @@ public class Enemy : Pawn, ITargetable
 
     public void SetAsTargetedEnemy()
     {
-        isTargeted = true;
-        ToggleTargetSprite(true);
+        if(isTargetable)
+        {
+            isTargeted = true;
+            ToggleTargetSprite(true);
+        }
+
     }
 
     public void UnsetAsTargetedEnemy()
