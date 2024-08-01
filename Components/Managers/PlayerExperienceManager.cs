@@ -9,6 +9,9 @@ public class PlayerExperienceManager : Singleton<PlayerExperienceManager>
     private const float levelUpConstant = 0.3f;
     public float percentageToNextLevel;
 
+    public delegate void OnLevelUp();
+    public OnLevelUp onLevelUp;
+
     public int GetPlayerExperience()
     {
 
@@ -62,8 +65,14 @@ public class PlayerExperienceManager : Singleton<PlayerExperienceManager>
         Debug.Log("percent to next level "+percentageToNextLevel);
         if(oldLevel<level)
         {
+            LevelUp();
             Debug.Log($"Level up! new level is {level} experience is {exp}, exp of next level is {expOfNextLevel}");
         }
+    }
+
+    private void LevelUp()
+    {
+        onLevelUp.Invoke();
     }
 
 

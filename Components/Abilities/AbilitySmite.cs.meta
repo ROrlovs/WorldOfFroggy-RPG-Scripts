@@ -1,2 +1,17 @@
 fileFormatVersion: 2
 guid: c98b12f66e3c3364a9055b3267d83fa6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - abilitySO: {instanceID: 0}
+  - objectToInstantiate: {instanceID: 0}
+  - pawn: {instanceID: 0}
+  - player: {instanceID: 0}
+  - target: {instanceID: 0}
+  - sprite: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

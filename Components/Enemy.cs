@@ -1,23 +1,61 @@
+
+using System.Collections;
+
 using UnityEngine;
-using UnityEngine.UI;
+
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : Pawn, ITargetable
 {
-
+   [Header("PLACE SO HERE")]
+    public EnemySO enemySO;
+    [Space]
     public bool isTargeted;
     public bool isTargetable;
 
-    public SpriteRenderer targetSpriteRenderer;
 
+    public SpriteRenderer targetSpriteRenderer;
+    public int expToGive;
+
+    public override void Awake()
+    {
+        base.Awake();
+    }
 
 
     void Start()
     {
         //Debug.Log(ReturnTargetTransform());
         ToggleTargetSprite(false);
+        InitialiseStats();
         isTargetable = true;
     }
+
+    public override void InitialiseStats()
+    {
+        pawnName = enemySO.enemyName;
+        speed = enemySO.speed;
+        expToGive = enemySO.expToGive;
+        isTargetable=enemySO.isTargetable;
+        strength = enemySO.strength;
+        agility = enemySO.agility;
+        intelligence = enemySO.intelligence;
+        stamina = enemySO.stamina;
+        maxHealth = enemySO.maxHealth;
+        maxMana = enemySO.maxMana;
+        maxEnergy = enemySO.maxEnergy;
+        healthRegen = enemySO.healthRegen;
+        manaRegen = enemySO.manaRegen;
+        energyRegen = enemySO.energyRegen;
+        canRegenerateEnergy = enemySO.canRegenerateEnergy;
+        canRegenerateHealth = enemySO.canRegenerateHealth;
+        canRegenerateMana = enemySO.canRegenerateMana;
+
+        base.InitialiseStats();       
+    }
+
+
+
 
     public override void Move(Vector2 movement)
     {
@@ -27,6 +65,7 @@ public class Enemy : Pawn, ITargetable
     public override void Die()
     {
         Destroy(GetComponent<BoxCollider2D>());
+        PlayerExperienceManager.Instance.AddExperience(expToGive);
         isTargetable = false;
         if(isTargeted)
         {

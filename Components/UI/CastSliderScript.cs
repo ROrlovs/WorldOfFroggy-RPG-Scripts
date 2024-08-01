@@ -7,7 +7,7 @@ public class CastSliderScript : MonoBehaviour
 {
 
     Slider slider;
-    GameObject parent;
+    GameObject gameobj;
     TextMeshProUGUI tmp;
     [SerializeField] Image abilityImage;
 
@@ -15,14 +15,19 @@ public class CastSliderScript : MonoBehaviour
     {
         //Debug.Log(abilityImage);
         tmp = GetComponentInChildren<TextMeshProUGUI>();
-        parent = transform.parent.gameObject;
+        gameobj = transform.gameObject;
         slider = GetComponent<Slider>();
     }
 
     private void Start()
     {
         PlayerCastManager.Instance.onPlayerStartCast += StartSlider;
-        parent.SetActive(false);
+        gameobj.SetActive(false);
+    }
+
+    private void OnDestroy() 
+    {
+        PlayerCastManager.Instance.onPlayerStartCast -= StartSlider;      
     }
 
     private void StartSlider(Ability ability)
@@ -30,7 +35,7 @@ public class CastSliderScript : MonoBehaviour
         if(ability.castingTime>0.1f)
         {
             //Debug.Log("start slider");
-            parent.SetActive(true);
+            gameobj.SetActive(true);
             tmp.text = ability.name;
             abilityImage.sprite = ability.sprite;
             //Debug.Log("starting slidercasting coroutine with "+castTime);
@@ -61,7 +66,7 @@ public class CastSliderScript : MonoBehaviour
         //Debug.Log("reset slider");
         abilityImage.sprite = null;
         slider.value = 0f;
-        parent.SetActive(false);
+        gameobj.SetActive(false);
     }
 
 

@@ -9,6 +9,8 @@ public class Ability : ScriptableObject
     public float cooldown;
     public float castingTime;
     public float damageToDeal;
+    public float manaCost;
+    public float energyCost;
     public GameObject objectToInstantiate;
     public Pawn pawn;
     public Player player;
